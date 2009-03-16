@@ -163,19 +163,29 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     var linkPattern = /"([^"]*)":([\w-.:\/@]*)/;
     var emailPattern = /<r:enkode_mailto email="([^"]+)"( link_text="([^"]+)")?[^>]*\/>/;
     var attachmentPattern = /<r:attachment:link name="([^"]+)"[^>]*>(([^<]+)<\/r:attachment:link)?/;
+    var assetPattern = /<r:asset:link id="([^"]+)"( size="([^"]+)")?[^>]*>(([^<]+)<\/r:asset:link)?/;
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(linkPattern)) {
         $('display_text').value = RegExp.$1;
         $('web_text').value = RegExp.$2;
         this.switchTransformChoice($$("#link_transform_choice_link input")[0]);
+
       } else if (this.textSelection['selectedText'].match(emailPattern)) {
         $('display_text').value = RegExp.$3;
         $('email_text').value = RegExp.$1;
         this.switchTransformChoice($$("#link_transform_choice_email input")[0]);
+
       } else if (this.textSelection['selectedText'].match(attachmentPattern)) {
         $('display_text').value = RegExp.$3;
         $('attachment_text').value = RegExp.$1;
         this.switchTransformChoice($$("#link_transform_choice_attachment input")[0]);
+
+      } else if (matches = this.textSelection['selectedText'].match(assetPattern)) {
+        $('display_text').value = RegExp.$5;
+        $('asset_id').value = RegExp.$1;
+        $('asset_size').value = RegExp.$3;
+
+        this.switchTransformChoice($$("#link_transform_choice_asset input")[0]);
       } else {
         $('display_text').value = this.textSelection['selectedText'];
         this.switchTransformChoice($$("#link_transform_choice_link input")[0]);
@@ -221,6 +231,16 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
           textInsert = '<r:attachment:link name="'+attachmentValue+'">'+attachmentText+'</r:attachment:link>';
         }
       break
+      case 'asset':
+        assetID = $('asset_id').value;
+        assetText = displayText.value;
+        assetSize = $('asset_size').value;
+        if (assetText == '') {
+          textInsert = '<r:asset:link id="'+assetID+'" size="'+assetSize+'" />';
+        } else {
+          textInsert = '<r:asset:link id="'+assetID+'" size="'+assetSize+'">'+assetText+'</r:asset:link>';
+        }
+      break
       default: alert('something wrong'); 
     } 
 
@@ -240,7 +260,7 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     })
 
     Element.show('transform_input_' + this.transformationType());
-    Element.addClassName('transform_choice_' + this.transformationType(), 'transform_current');
+    Element.addClassName('link_transform_choice_' + this.transformationType(), 'transform_current');
   },
   
   initializeObservers: function() {
@@ -278,8 +298,8 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
 
       } else if (matches = this.textSelection['selectedText'].match(assetPattern)) {
         this.switchInputChoice($('img_asset_' + matches[1]))
-        if (matches[3]) this.switchInputSize(matches[3])
-        $('alt_text').value = matches[5];
+        if (matches[3]) $('img_asset_size').value = matches[3];
+        if (matches[5]) $('alt_text').value = matches[5];
         this.switchTransformChoice($$("#image_transform_choice_asset input")[0]);
 
       } else {
@@ -355,16 +375,6 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
     })
 
     Element.addClassName(this.selectedThumbnail(), 'selected_thumbnail');
-  },
-  
-  switchInputSize: function(size) {
-    if (sel = $('img_asset_size')) {
-      for (var i=0; i<sel.length; i++) {      // nasty nasty nasty
-        if (sel[i].value == size) {
-          sel.selectedIndex = i;
-        }
-      }
-    }
   },
   
   selectedAsset: function (argument) {
