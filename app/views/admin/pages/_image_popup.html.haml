@@ -4,7 +4,7 @@
     %form#image_transform_form.transform_form{ :name => "transform_form" }
       .transform_container
         .transform_title
-          %strong 1. Link to:
+          %strong 1. Choose Image:
         .add_border_container
           .transform_choice_container
             #image_transform_choice_web.transform_choice.transform_current
@@ -16,6 +16,15 @@
                 %label
                   %input{:type => "radio", :name => "transform_choice", :value => "attachment"}
                   \ Attachment
+            - if @page && @page.respond_to?(:assets)
+              #image_transform_choice_asset.transform_choice
+                %label
+                  %input{:type => "radio", :name => "transform_choice", :value => "asset"}
+                  \ Attached asset
+              #image_transform_choice_upload.transform_choice
+                %label
+                  %input{:type => "radio", :name => "transform_choice", :value => "upload"}
+                  \ Upload image
           .transform_input_container
             #image_transform_input_web.transform_input
               %input#img_web_text{:type => "text", :name => "img_web_text", :value => "", :size => "30"}
@@ -29,7 +38,31 @@
                     %strong Is your image the right size and type?
                     Images need to be resized and compressed for the web using a graphics program like Photoshop.
                 - else 
-                  %p There are no images attached to this page.  Attach one and save changes, then return here to insert it.
+                  %p.warning There are no images attached to this page. Attach one and save changes, then return here to insert it.
+            - if @page && @page.respond_to?(:assets)
+              #image_transform_input_asset.transform_input{:style => "display:none;"}
+                - if @page.assets.images.any?
+                  - @page.assets.images.each do |asset|
+                    %input{:type => "radio", :id => "img_asset_#{asset.id}", :class => "asset_picker", :name => "img_asset_id", :value => asset.id}
+                    %label{:for => "img_asset_#{asset.id}"}
+                      = image_tag(asset.thumbnail(:thumbnail), :id => "img_asset_#{asset.id}_thumbnail", :class => 'asset_thumbnail')
+                  %p
+                    %label{:for => 'img_asset_size'} Image size
+                    = select_tag('img_asset_size',  options_from_collection_for_select(Asset.thumbnail_names, 'to_s', 'to_s'))
+                - else 
+                  %p.warning 
+                    There are no images attached to this page. Choose 'upload image' to add one.
+              #image_transform_input_upload.transform_input{:style => "display:none;"}
+                - form_for :asset, :url => assets_path(:page => @page), :html => { :method => "post", :multipart => true } do |form|
+                  %div.file
+                    %label.upload Choose a file to upload
+                    = form.file_field :asset, :class => "", :style => "width: 100%", :disabled => true
+
+                  .upload-buttons
+                    = form.submit "Save and Upload", :class => "button", :disabled => true
+                  %p.help
+                    %strong currently disabled
+                    while we work on inline uploads
           %br{:clear => "all"}/
       .transform_container
         .transform_title
