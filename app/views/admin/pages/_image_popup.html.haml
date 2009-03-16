@@ -48,7 +48,7 @@
                       = image_tag(asset.thumbnail(:thumbnail), :id => "img_asset_#{asset.id}_thumbnail", :class => 'asset_thumbnail')
                   %p
                     %label{:for => 'img_asset_size'} Image size
-                    = select_tag('img_asset_size',  options_from_collection_for_select(Asset.thumbnail_names, 'to_s', 'to_s'))
+                    = select_tag('img_asset_size',  options_from_collection_for_select(Asset.thumbnail_names + [:original], 'to_s', 'to_s'))
                 - else 
                   %p.warning 
                     There are no images attached to this page. Choose 'upload image' to add one.
