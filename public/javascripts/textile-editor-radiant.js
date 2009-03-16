@@ -163,7 +163,7 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     var linkPattern = /"([^"]*)":([\w-.:\/@]*)/;
     var emailPattern = /<r:enkode_mailto email="([^"]+)"( link_text="([^"]+)")?[^>]*\/>/;
     var attachmentPattern = /<r:attachment:link name="([^"]+)"[^>]*>(([^<]+)<\/r:attachment:link)?/;
-    var assetPattern = /<r:asset:link id="([^"]+)"( size="([^"]+)")?[^>]*>(([^<]+)<\/r:asset:link)?/;
+    var assetPattern = /<r:assets:link id="([^"]+)"( size="([^"]+)")?[^>]*>(([^<]+)<\/r:assets:link)?/;
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(linkPattern)) {
         $('display_text').value = RegExp.$1;
@@ -236,9 +236,9 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
         assetText = displayText.value;
         assetSize = $('asset_size').value;
         if (assetText == '') {
-          textInsert = '<r:asset:link id="'+assetID+'" size="'+assetSize+'" />';
+          textInsert = '<r:assets:link id="'+assetID+'" size="'+assetSize+'" />';
         } else {
-          textInsert = '<r:asset:link id="'+assetID+'" size="'+assetSize+'">'+assetText+'</r:asset:link>';
+          textInsert = '<r:assets:link id="'+assetID+'" size="'+assetSize+'">'+assetText+'</r:assets:link>';
         }
       break
       default: alert('something wrong'); 
