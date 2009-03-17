@@ -307,7 +307,7 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
       }
     } else {
-      var field = $$("#image_transform_choice_upload input")[0] || $$("#image_transform_choice_attachment input")[0] || $$("#image_transform_choice_web input")[0];
+      var field = $$("#image_transform_choice_attachment input")[0] || $$("#image_transform_choice_web input")[0];
       this.switchTransformChoice(field);
     }
   },
@@ -333,7 +333,7 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
           textInsert = '<r:attachment:image name="'+attachmentValue+'" alt="'+altText+'" />';
         }
       break
-      case 'asset':
+      case 'asset': case 'bucket':
         assetID = this.selectedAssetID();
         assetSize = $('img_asset_size').value;
         if (altText == '') {
@@ -342,7 +342,7 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
           textInsert = '<r:assets:image id="'+assetID+'" size="' + assetSize + '" alt="'+altText+'" />';
         }
       break
-      default: alert('something wrong'); 
+      default: alert('transform type not recognised: should be one of web, attachment, asset or bucket'); 
     } 
 
     this.insertTextSelection(textInsert);
@@ -378,7 +378,7 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
   },
   
   selectedAsset: function (argument) {
-    var buttonGroup = this.form.img_asset_id;
+    var buttonGroup = this.form.img_asset_id + this.form.img_bucket_id;
     var assetID = null;
     for (var i=0; i<buttonGroup.length; i++) {
       if (buttonGroup[i].checked) {
