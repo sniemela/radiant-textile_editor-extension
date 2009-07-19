@@ -62,7 +62,8 @@
                     %br
                     = select_tag('asset_size',  options_from_collection_for_select(Asset.thumbnail_names + [:original], 'to_s', 'to_s'))
                   %p.help
-                    This list only shows assets that have been attached to this page.
+                    %strong Links will display with icons
+                    unless perhaps we include an option box here
                 - else
                   %p There are no assets attached to this page. Please use the bucket to add an asset and it will appear here.
           %br{:clear => "all"}/
