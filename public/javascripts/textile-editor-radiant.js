@@ -265,34 +265,21 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
   initializeFields: function() {
     var imgPattern = /!([^!(]*)(\(([^)]+)\))?!/;
     var attachmentPattern = /<r:attachment:image name="([^"]+)"( alt="([^"]+)")?[^>]*\/>/;
-    var assetPattern = /<r:assets:image id="([^"]+)"( size="([^"]+)")?( alt="([^"]+)")?[^\/]*\/>/;
-    var matches = [];
-    console.log(this.textSelection['selectedText']);
-    
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(imgPattern)) {
         $('img_web_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
-
       } else if (this.textSelection['selectedText'].match(attachmentPattern)) {
         $('img_attachment_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
         this.switchTransformChoice($$("#image_transform_choice_attachment input")[0]);
-
-      } else if (matches = this.textSelection['selectedText'].match(assetPattern)) {
-        this.switchInputChoice($('img_asset_' + matches[1]))
-        if (matches[3]) this.switchInputSize(matches[3])
-        $('alt_text').value = matches[5];
-        this.switchTransformChoice($$("#image_transform_choice_asset input")[0]);
-
       } else {
         $('alt_text').value = this.textSelection['selectedText'];
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
       }
     } else {
-      var field = $$("#image_transform_choice_upload input")[0] || $$("#image_transform_choice_attachment input")[0] || $$("#image_transform_choice_web input")[0];
-      this.switchTransformChoice(field);
+      this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
     }
   },
   
@@ -317,15 +304,6 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
           textInsert = '<r:attachment:image name="'+attachmentValue+'" alt="'+altText+'" />';
         }
       break
-      case 'asset':
-        assetID = this.selectedAssetID();
-        assetSize = $('img_asset_size').value;
-        if (altText == '') {
-          textInsert = '<r:assets:image id="'+assetID+'" size="' + assetSize + '" />';
-        } else {
-          textInsert = '<r:assets:image id="'+assetID+'" size="' + assetSize + '" alt="'+altText+'" />';
-        }
-      break
       default: alert('something wrong'); 
     } 
 
@@ -334,8 +312,6 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
   },
 
   switchTransformChoice: function(element) {
-    // console.log('switchTransformChoice', arguments);
-    
     if (element) element.checked = true;
     
     $$('.transform_input').each(function(node) {
@@ -349,54 +325,8 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
     Element.show('image_transform_input_' + this.transformationType());
     Element.addClassName('image_transform_choice_' + this.transformationType(), 'transform_current');
   },
-
-  switchInputChoice: function(element) {
-    if (element) element.checked = true;
-    // console.log('switchInputChoice', arguments);
-    
-    $$('.asset_thumbnail').each(function(node) {
-      Element.removeClassName(node, 'selected_thumbnail');
-    })
-
-    Element.addClassName(this.selectedThumbnail(), 'selected_thumbnail');
-  },
   
-  switchInputSize: function(size) {
-    if (sel = $('img_asset_size')) {
-      for (var i=0; i<sel.length; i++) {      // nasty nasty nasty
-        if (sel[i].value == size) {
-          sel.selectedIndex = i;
-        }
-      }
-    }
-  },
-  
-  selectedAsset: function (argument) {
-    var buttonGroup = this.form.img_asset_id;
-    var assetID = null;
-    for (var i=0; i<buttonGroup.length; i++) {
-      if (buttonGroup[i].checked) {
-        asset_id = buttonGroup[i].id;
-        break;
-      }
-    }
-    return asset_id;
-  },
-  
-  selectedAssetID: function () {
-    var a = this.selectedAsset();
-    if (a) return a.split('_').pop();
-  },
-  
-  selectedThumbnail: function() {
-    return $(this.selectedAsset()  + '_thumbnail');
-  },
-
   initializeObservers: function() {
-    $$('.asset_picker').each(function (radiobutton) {
-      Event.observe(radiobutton, 'click', this.switchInputChoice.bindAsEventListener(this));
-    }.bind(this));
-    
   }
   
 });
