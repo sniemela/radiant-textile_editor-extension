@@ -36,6 +36,8 @@
 
 .transform_input_container {
 	width: 332px;
+	height: 200px;
+	overflow: auto;
 	margin: 0px;
 	padding: 7px;
 	float: right;
@@ -53,4 +55,16 @@
 
 .help {
 	font-size: 0.75em;
+}
+
+.transform_input input.asset_picker {
+  display: none;
+}
+
+.transform_input img.asset_thumbnail {
+  border: 4px solid white;
+}
+
+.transform_input img.selected_thumbnail {
+  border: 4px solid #c00;
 }

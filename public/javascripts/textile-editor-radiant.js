@@ -163,19 +163,29 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     var linkPattern = /"([^"]*)":([\w-.:\/@]*)/;
     var emailPattern = /<r:enkode_mailto email="([^"]+)"( link_text="([^"]+)")?[^>]*\/>/;
     var attachmentPattern = /<r:attachment:link name="([^"]+)"[^>]*>(([^<]+)<\/r:attachment:link)?/;
+    var assetPattern = /<r:assets:link id="([^"]+)"( size="([^"]+)")?[^>]*>(([^<]+)<\/r:assets:link)?/;
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(linkPattern)) {
         $('display_text').value = RegExp.$1;
         $('web_text').value = RegExp.$2;
         this.switchTransformChoice($$("#link_transform_choice_link input")[0]);
+
       } else if (this.textSelection['selectedText'].match(emailPattern)) {
         $('display_text').value = RegExp.$3;
         $('email_text').value = RegExp.$1;
         this.switchTransformChoice($$("#link_transform_choice_email input")[0]);
+
       } else if (this.textSelection['selectedText'].match(attachmentPattern)) {
         $('display_text').value = RegExp.$3;
         $('attachment_text').value = RegExp.$1;
         this.switchTransformChoice($$("#link_transform_choice_attachment input")[0]);
+
+      } else if (matches = this.textSelection['selectedText'].match(assetPattern)) {
+        $('display_text').value = RegExp.$5;
+        $('asset_id').value = RegExp.$1;
+        $('asset_size').value = RegExp.$3;
+
+        this.switchTransformChoice($$("#link_transform_choice_asset input")[0]);
       } else {
         $('display_text').value = this.textSelection['selectedText'];
         this.switchTransformChoice($$("#link_transform_choice_link input")[0]);
@@ -225,6 +235,16 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
           textInsert = '<r:attachment:link name="'+attachmentValue+'">'+attachmentText+'</r:attachment:link>';
         }
       break
+      case 'asset':
+        assetID = $('asset_id').value;
+        assetText = displayText.value;
+        assetSize = $('asset_size').value;
+        if (assetText == '') {
+          textInsert = '<r:assets:link id="'+assetID+'" size="'+assetSize+'" />';
+        } else {
+          textInsert = '<r:assets:link id="'+assetID+'" size="'+assetSize+'">'+assetText+'</r:assets:link>';
+        }
+      break
       default: alert('something wrong'); 
     } 
 
@@ -244,7 +264,7 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     })
 
     Element.show('transform_input_' + this.transformationType());
-    Element.addClassName('transform_choice_' + this.transformationType(), 'transform_current');
+    Element.addClassName('link_transform_choice_' + this.transformationType(), 'transform_current');
   },
   
   initializeObservers: function() {
@@ -265,21 +285,34 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
   initializeFields: function() {
     var imgPattern = /!([^!(]*)(\(([^)]+)\))?!/;
     var attachmentPattern = /<r:attachment:image name="([^"]+)"( alt="([^"]+)")?[^>]*\/>/;
+    var assetPattern = /<r:assets:image id="([^"]+)"( size="([^"]+)")?( alt="([^"]+)")?[^\/]*\/>/;
+    var matches = [];
+    console.log(this.textSelection['selectedText']);
+    
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(imgPattern)) {
         $('img_web_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
+
       } else if (this.textSelection['selectedText'].match(attachmentPattern)) {
         $('img_attachment_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
         this.switchTransformChoice($$("#image_transform_choice_attachment input")[0]);
+
+      } else if (matches = this.textSelection['selectedText'].match(assetPattern)) {
+        this.switchInputChoice($('img_asset_' + matches[1]))
+        if (matches[3]) $('img_asset_size').value = matches[3];
+        if (matches[5]) $('alt_text').value = matches[5];
+        this.switchTransformChoice($$("#image_transform_choice_asset input")[0]);
+
       } else {
         $('alt_text').value = this.textSelection['selectedText'];
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
       }
     } else {
-      this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
+      var field = $$("#image_transform_choice_attachment input")[0] || $$("#image_transform_choice_web input")[0];
+      this.switchTransformChoice(field);
     }
   },
   
@@ -304,7 +337,16 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
           textInsert = '<r:attachment:image name="'+attachmentValue+'" alt="'+altText+'" />';
         }
       break
-      default: alert('something wrong'); 
+      case 'asset': case 'bucket':
+        assetID = this.selectedAssetID();
+        assetSize = $('img_asset_size').value;
+        if (altText == '') {
+          textInsert = '<r:assets:image id="'+assetID+'" size="' + assetSize + '" />';
+        } else {
+          textInsert = '<r:assets:image id="'+assetID+'" size="' + assetSize + '" alt="'+altText+'" />';
+        }
+      break
+      default: alert('transform type not recognised: should be one of web, attachment, asset or bucket'); 
     } 
 
     this.insertTextSelection(textInsert);
@@ -312,6 +354,8 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
   },
 
   switchTransformChoice: function(element) {
+    // console.log('switchTransformChoice', arguments);
+    
     if (element) element.checked = true;
     
     $$('.transform_input').each(function(node) {
@@ -325,8 +369,44 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
     Element.show('image_transform_input_' + this.transformationType());
     Element.addClassName('image_transform_choice_' + this.transformationType(), 'transform_current');
   },
+
+  switchInputChoice: function(element) {
+    if (element) element.checked = true;
+    // console.log('switchInputChoice', arguments);
+    
+    $$('.asset_thumbnail').each(function(node) {
+      Element.removeClassName(node, 'selected_thumbnail');
+    })
+
+    Element.addClassName(this.selectedThumbnail(), 'selected_thumbnail');
+  },
   
+  selectedAsset: function (argument) {
+    var buttonGroup = this.form.img_asset_id + this.form.img_bucket_id;
+    var assetID = null;
+    for (var i=0; i<buttonGroup.length; i++) {
+      if (buttonGroup[i].checked) {
+        asset_id = buttonGroup[i].id;
+        break;
+      }
+    }
+    return asset_id;
+  },
+  
+  selectedAssetID: function () {
+    var a = this.selectedAsset();
+    if (a) return a.split('_').pop();
+  },
+  
+  selectedThumbnail: function() {
+    return $(this.selectedAsset()  + '_thumbnail');
+  },
+
   initializeObservers: function() {
+    $$('.asset_picker').each(function (radiobutton) {
+      Event.observe(radiobutton, 'click', this.switchInputChoice.bindAsEventListener(this));
+    }.bind(this));
+    
   }
   
 });
