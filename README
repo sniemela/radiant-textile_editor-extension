@@ -4,15 +4,6 @@ Created by Jason Garber, September, 2008.  Based on the Textile Editor Helper pl
 
 Textile Editor places a bar above the textarea when Textile is the current input filter.
 
-==Forked!
-
-This fork extends TE to work with Paperclipped as well as Page Attachments. At the moment it depends on a couple of changes I've made to Paperclipped - some named scope and a method that returns the list of thumbnail sizes - but if those don't get incorporated it's easy enough to work around.
-
-Still to do: 
-
-* links to assets
-* inline uploads from the image popup. This is always horrible, requires flash and probably won't work, but if it does then we can replace the assets bucket entirely for non-admin users.
-
 == Installation
 
 ./script/extension install textile_editor
