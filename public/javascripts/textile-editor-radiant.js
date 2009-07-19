@@ -209,10 +209,10 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
         emailAddressValue = emailAddress.value;
         emailAddressText = displayText.value;
         if (emailAddressText != '') {
-          textInsert = '<r:enkode_mailto email="'+emailAddressValue+'" link_text="'+emailAddressText+'" />';
+          textInsert = "<r:enkode_mailto email='"+emailAddressValue+"' link_text='"+emailAddressText+"'/>";
         }
         else {
-          textInsert = '<r:enkode_mailto email="'+emailAddressValue+'" />';
+          textInsert = "<r:enkode_mailto email='"+emailAddressValue+"'/>";
         }
       break
       case 'attachment':
@@ -220,9 +220,9 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
         attachmentValue = attachment.value;
         attachmentText = displayText.value;
         if (attachmentText == '') {
-          textInsert = '<r:attachment:link name="'+attachmentValue+'" />';
+          textInsert = "<r:attachment:link name='"+attachmentValue+"'/>";
         } else {
-          textInsert = '<r:attachment:link name="'+attachmentValue+'">'+attachmentText+'</r:attachment:link>';
+          textInsert = "<r:attachment:link name='"+attachmentValue+"'>"+attachmentText+"</r:attachment:link>";
         }
       break
       default: alert('something wrong'); 
@@ -299,9 +299,9 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
         attachment = $('img_attachment_text');
         attachmentValue = attachment.value;
         if (altText == '') {
-          textInsert = '<r:attachment:image name="'+attachmentValue+'" />';
+          textInsert = "<r:attachment:image name='"+attachmentValue+"'/>";
         } else {
-          textInsert = '<r:attachment:image name="'+attachmentValue+'" alt="'+altText+'" />';
+          textInsert = "<r:attachment:image name='"+attachmentValue+"' alt='"+altText+"'/>";
         }
       break
       default: alert('something wrong'); 
