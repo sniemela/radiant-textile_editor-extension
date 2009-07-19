@@ -21,10 +21,10 @@
                 %label
                   %input{:type => "radio", :name => "transform_choice", :value => "asset"}
                   \ Attached asset
-              #image_transform_choice_bucket.transform_choice
+              #image_transform_choice_upload.transform_choice
                 %label
-                  %input{:type => "radio", :name => "transform_choice", :value => "bucket"}
-                  \ Bucket asset
+                  %input{:type => "radio", :name => "transform_choice", :value => "upload"}
+                  \ Upload image
           .transform_input_container
             #image_transform_input_web.transform_input
               %input#img_web_text{:type => "text", :name => "img_web_text", :value => "", :size => "30"}
@@ -51,23 +51,19 @@
                     = select_tag('img_asset_size',  options_from_collection_for_select(Asset.thumbnail_names + [:original], 'to_s', 'to_s'))
                 - else 
                   %p.warning 
-                    There are no images attached to this page. Use the Assets bucket to add some and then come back here.
-              #image_transform_input_bucket.transform_input{:style => "display:none;"}
-                - if session[:bucket]
-                  - session[:bucket].each do |url, info| 
-                    - asset = Asset.find(info[:id]) rescue nil
-                    - if asset
-                      %input{:type => "radio", :id => "img_bucket_#{asset.id}", :class => "asset_picker", :name => "img_asset_id", :value => asset.id}
-                      %label{:for => "img_bucket_#{asset.id}"}
-                        = image_tag(asset.thumbnail(:thumbnail), :id => "img_bucket_#{asset.id}_thumbnail", :class => 'asset_thumbnail')
-                  %p
-                    %label{:for => 'img_asset_size'} Image size
-                    = select_tag('img_asset_size', options_from_collection_for_select(Asset.thumbnail_names + [:original], 'to_s', 'to_s'))
-                - else 
-                  %p.warning 
-                    There are no images in your bucket. Use the main 
-                    = link_to "assets page", assets_url
-                    to add some and then come back here
+                    There are no images attached to this page. Choose 'upload image' to add one.
+              #image_transform_input_upload.transform_input{:style => "display:none;"}
+                - form_for :asset, :url => assets_path(:page => @page), :html => { :method => "post", :multipart => true } do |form|
+                  %div.file
+                    %label.upload Choose a file to upload
+                    = form.file_field :asset, :class => "", :style => "width: 100%", :disabled => true
+
+                  .upload-buttons
+                    = form.submit "Save and Upload", :class => "button", :disabled => true
+                  %p.help
+                    %strong currently disabled
+                    while we work on inline uploads
+                    (which are always nasty)
           %br{:clear => "all"}/
       .transform_container
         .transform_title
