@@ -6,12 +6,11 @@ Textile Editor places a bar above the textarea when Textile is the current input
 
 ==Forked!
 
-This fork extends TE to work with Paperclipped assets as well as Page Attachments. At the moment it depends on a couple of changes I've made to Paperclipped - some named scope and a method that returns the list of thumbnail sizes - but if those don't get incorporated it's easy enough to work around.
+This fork extends TE to work with Paperclipped as well as Page Attachments. At the moment it depends on a couple of changes I've made to Paperclipped - some named scope and a method that returns the list of thumbnail sizes - but if those don't get incorporated it's easy enough to work around.
 
-I've cleaned up one or two minor inconsistencies that were affecting the popup formatting but otherwise I've worked carefully within the existing code (which was already nicely extensible).
+Still to do: 
 
-Maybe to do: 
-
+* links to assets
 * inline uploads from the image popup. This is always horrible, requires flash and probably won't work, but if it does then we can replace the assets bucket entirely for non-admin users.
 
 == Installation
