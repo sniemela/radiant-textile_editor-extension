@@ -60,7 +60,7 @@
                   %p
                     %label{:for => 'asset_size'} Link to size (for images)
                     %br
-                    = select_tag('asset_size',  options_from_collection_for_select(Asset.thumbnail_names + [:original], 'to_s', 'to_s'))
+                    = select_tag('asset_size',  options_from_collection_for_select(Asset.thumbnail_names, 'to_s', 'to_s'))
                   %p.help
                     %strong Links will display with icons
                     unless perhaps we include an option box here
