@@ -22,11 +22,6 @@
                 %label
                   %input{:type => "radio", :name => "transform_choice", :value => "attachment"}
                   \ Attachment
-            - if @page && @page.respond_to?(:assets)
-              #link_transform_choice_asset.transform_choice
-                %label
-                  %input{:type => "radio", :name => "transform_choice", :value => "asset"}
-                  \ Page Asset
           .transform_input_container
             #transform_input_web.transform_input
               %input#web_text{:type => "text", :name => "web_text", :value => "", :size => "30"}
@@ -49,23 +44,6 @@
                     Your document will be accessible to a wider audience if you publish your Word, Powerpoint, or other document type as a PDF.
                 - else
                   %p There are no files attached to this page.  Attach one and save changes, then return here to add a link to it.
-            - if @page && @page.respond_to?(:assets)
-              #transform_input_asset.transform_input{:style => "display:none;"}
-                - if @page.assets.any?
-                  %select{:id => 'asset_id'}
-                    - [:movies, :audios, :images, :others].each do |cat|
-                      - if @page.assets.send(cat).any?
-                        %optgroup{:label => cat.to_s.upcase}
-                          = options_from_collection_for_select(@page.assets.send(cat), "id", "title")
-                  %p
-                    %label{:for => 'asset_size'} Link to size (for images)
-                    %br
-                    = select_tag('asset_size',  options_from_collection_for_select(Asset.thumbnail_names, 'to_s', 'to_s'))
-                  %p.help
-                    %strong Links will display with icons
-                    unless perhaps we include an option box here
-                - else
-                  %p There are no assets attached to this page. Please use the bucket to add an asset and it will appear here.
           %br{:clear => "all"}/
       .transform_container
         .transform_title
