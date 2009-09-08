@@ -1,7 +1,7 @@
 var teButtons = TextileEditor.buttons;
 
-teButtons.push(new TextileEditorButton('ed_strong',     'bold.png',          '*',   '*',  'b', 'Bold','s'));
-teButtons.push(new TextileEditorButton('ed_emphasis',   'italic.png',        '_',   '_',  'i', 'Italicize','s'));
+teButtons.push(new TextileEditorButton('ed_strong',     'bold.png',          '**',   '**',  'b', 'Bold','s'));
+teButtons.push(new TextileEditorButton('ed_emphasis',   'italic.png',        '__',   '__',  'i', 'Italicize','s'));
 teButtons.push(new TextileEditorButton('ed_underline',  'underline.png',     '+',   '+',  'u', 'Underline','s'));
 teButtons.push(new TextileEditorButton('ed_strike',     'strikethrough.png', '-',   '-',  's', 'Strikethrough','s'));
 teButtons.push(new TextileEditorButton('ed_ol',         'list_numbers.png',  '# ', '\n', ',', 'Numbered List'));
