@@ -1,6 +1,6 @@
 - content_for 'popups' do
-  #link-popup.popup{:style => "display:none;"}
-    %h3= t('textile_editor.add_link')
+  #link-popup.te_popup{:style => "display:none;"}
+    %h3.title= t('textile_editor.add_link')
     
     %form#link_transform_form.transform_form{:name => "transform_form"}
       .transform_container
@@ -23,20 +23,20 @@
                   %input{:type => "radio", :name => "transform_choice", :value => "attachment"}
                   = t('textile_editor.attachment')
           .transform_input_container
-            #transform_input_web.transform_input
+            #link_transform_input_web.transform_input
               %input#web_text{:type => "text", :name => "web_text", :value => "", :size => "30"}
               %br/
               %p.help
                 %strong= t('textile_editor.not_sure_question')
                 = t('textile_editor.not_sure_answer')
             - if Page.instance_methods.include?("tag:enkode_mailto")
-              #transform_input_email.transform_input{:style => "display:none;"}
+              #link_transform_input_email.transform_input{:style => "display:none;"}
                 %input#email_text{:type => "text", :name => "email_text", :value => "", :size => "30"}
                 %p.help
                   %strong.warning= t('textile_editor.spam_warning')
                   = t('textile_editor.spam_description')
             - if @page && @page.respond_to?(:attachments)
-              #transform_input_attachment.transform_input{:style => "display:none;"}
+              #link_transform_input_attachment.transform_input{:style => "display:none;"}
                 = hidden_field(:page, :ancestor_attachments_count)
                 = select_tag('attachment_text',  option_groups_from_collection_for_select(@page.self_and_ancestors, :attachments, :title, :filename, :filename))
                 %p.help.advisory
@@ -47,9 +47,9 @@
                   = t('textile_editor.attach_file_and_return')
           %br{:clear => "all"}/
       .transform_container
-        .transform_title
+        .transform_title.lower
           %strong= t('textile_editor.text_to_display')
-          %input#display_text{:type => "text", :size => "25", :name => "display_text"}
-      %input#link-popup-submit.submit{:type => "submit", :value => t('textile_editor.ok')}
-      = t('or')
+        .text_input
+          %input#display_text{:type => "text", :name => "display_text"}
+          %input#link-popup-submit.submit{:type => "submit", :value => t('textile_editor.ok')}
       = link_to_function(t('cancel'), :class => 'close-link') {|page| page.hide 'link-popup' }

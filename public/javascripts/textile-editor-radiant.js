@@ -267,11 +267,11 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
       Element.removeClassName(node, 'transform_current');
     })
 
-    Element.show('transform_input_' + this.transformationType());
-    Element.addClassName('transform_choice_' + this.transformationType(), 'transform_current');
+    Element.show('link_transform_input_' + this.transformationType());
+    Element.addClassName('link_transform_choice_' + this.transformationType(), 'transform_current');
     this.initializeFocus();
   },
-  
+
   initializeObservers: function() {
     Event.observe($('display_text'), 'keyup', this.displayTextObserver.bindAsEventListener(this));
     Event.observe($('web_text'), 'keyup', this.copyText.bindAsEventListener(this));
@@ -280,7 +280,7 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
 
   initializeFocus: function() {
     if (this.popupElement.visible()) {
-      $('transform_input_' + this.transformationType()).select('select, input')[0].focus();
+      $('link_transform_input_' + this.transformationType()).select('select, input')[0].focus();
     }
   }
   

@@ -12,3 +12,73 @@
   border-left: 1px solid #CCC;
   padding-bottom: 5px;
 }
+.te_popup {
+  background-color: #FFF;
+  border: 8px solid #666;
+  border-radius: 7px;
+  color: #333;
+  padding: 0 10px;
+  width: 520px;
+}
+.te_popup h3 {
+  background: #ECF4FF;
+  border-bottom: 1px solid #BCD8F4;
+  font-size: 120%;
+  margin: 0 -10px 0 -10px;
+  padding: 6px 10px;
+}
+.transform_form { padding-top: 10px; }
+.transform_container { margin-bottom: 10px; }
+.text_input {
+  float: left;
+  width: 340px;
+}
+.text_input input {
+  float: left;
+  font-size: 13px;
+  width: 270px;
+}
+.text_input .submit {
+  margin-left: 10px;
+  width: 50px;
+}
+.transform_title.lower {
+  float: left;
+  width: 166px;
+}
+.transform_input input {
+  font-size: 13px;
+  width: 340px;
+}
+.add_border_container {
+  border: 1px solid #BCD8F4;
+  margin-top: 5px;
+}
+.transform_choice_container {
+  background-color: #BCD8F4;
+  float: left;
+  padding: 5px 0 25px 0;
+}
+.transform_choice {
+  padding: 3px 0 3px 5px;
+  width: 150px;
+}
+.transform_current { background-color: #FFF; }
+.transform_input_container {
+  float: left;
+  width: 350px;
+}
+.transform_input { padding: 5px 10px; }
+.transform_input select { width: 200px; }
+.close-link {
+  clear: both;
+  display: block;
+  padding: 15px 0 10px 0;
+  text-align: center;
+}
+.help {
+  font-size: 11px;
+  line-height: 1.3;
+  margin: 0;
+  padding: 5px 0 0 0;
+}

@@ -1,6 +1,6 @@
 - content_for 'popups' do
-  #image-popup.popup{:style => "display: none"}
-    %h3= t('textile_editor.add_image')
+  #image-popup.te_popup{:style => "display: none"}
+    %h3.title= t('textile_editor.add_image')
     %form#image_transform_form.transform_form{ :name => "transform_form" }
       .transform_container
         .transform_title
@@ -33,9 +33,9 @@
                   = t('textile_editor.attach_image_and_return')
           %br{:clear => "all"}/
       .transform_container
-        .transform_title
+        .transform_title.lower
           %strong= t('textile_editor.alt_text')
-          %input#alt_text{:type => "text", :size => "25", :name => "alt_text"}
-      %input#image-popup-submit.submit{:type=>"submit", :value => t('textile_editor.ok')}
-      = t('or')
+        .text_input
+          %input#alt_text{:type => "text", :name => "alt_text"}
+          %input#image-popup-submit.submit{:type=>"submit", :value => t('textile_editor.ok')}
       = link_to_function(t('cancel'), :class => 'close-link') {|page| page.hide 'image-popup' }
