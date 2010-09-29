@@ -27,20 +27,17 @@ filterObserver.prototype = {
 Event.observe(window, 'load', load_textile_editor);
 
 function load_textile_editor(){
-  parts = $$('.form-area textarea').each(function(e) {
+  parts = $$('#tab_control .pages .page textarea', '.form_area textarea').each(function(e) {
     new filterObserver(e);
   });
 }
 
-
-
-var Popup = Class.create();
-Popup.prototype = {
+var TextileEditorPopup = Class.create();
+TextileEditorPopup.prototype = {
   initialize: function(button) {
     this.textArea = $(button).canvas;
     this.popupElement = this.getPopupWindow();
     this.form = this.popupElement.getElementsBySelector('form')[0];
-    this.submit = this.popupElement.getElementsBySelector('button.submit')[0];
     this.copyLabelFromAddress = true;
     this.textSelection = this.getTextSelection();
     
@@ -52,14 +49,15 @@ Popup.prototype = {
     this.initializeObservers();
     
     // General observers
-    Event.observe(this.submit, 'click', this.transform.bindAsEventListener(this));
+    Event.observe(this.form, 'submit', this.transform.bindAsEventListener(this));
     this.popupElement.getElementsBySelector('.transform_choice input').each(function(item) {
       Event.observe(item, 'click', this.switchTransformChoice.bindAsEventListener(this));
     }.bind(this));
     
     this.initializeAttachments();
     
-    Element.show(this.popupElement);    
+    Element.show(this.popupElement);
+    this.initializeFocus();
   },
   
   initializeAttachments: function() {
@@ -69,7 +67,7 @@ Popup.prototype = {
         return s.href.gsub( /.*\//, "" );
       });
       var newAttachments = $$('div.attachment-upload input[type=file]').collect(function(e) {
-        return e.value;
+        return e.value.gsub(/[^A-Za-z0-9\.\-]/, '_');
       });
       var attachments = extantAttachments.concat(newAttachments);
       optgroup.update(attachments.collect(function (e) {
@@ -177,9 +175,9 @@ Popup.prototype = {
   }
 }
 
-// Subclass of Popup specifically for adding links
+// Subclass of TextileEditorPopup specifically for adding links
 var LinkPopup = Class.create();
-Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
+Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
   getPopupWindow: function() {
     return $('link-popup');
   },
@@ -211,7 +209,8 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
     }
   },
   
-  transform: function() {
+  transform: function(event) {
+    Event.stop(event);
     displayText = $('display_text');
     switch(this.transformationType()) {
       case 'web':
@@ -268,21 +267,28 @@ Object.extend(Object.extend(LinkPopup.prototype,Popup.prototype),{
       Element.removeClassName(node, 'transform_current');
     })
 
-    Element.show('transform_input_' + this.transformationType());
-    Element.addClassName('transform_choice_' + this.transformationType(), 'transform_current');
+    Element.show('link_transform_input_' + this.transformationType());
+    Element.addClassName('link_transform_choice_' + this.transformationType(), 'transform_current');
+    this.initializeFocus();
   },
-  
+
   initializeObservers: function() {
     Event.observe($('display_text'), 'keyup', this.displayTextObserver.bindAsEventListener(this));
     Event.observe($('web_text'), 'keyup', this.copyText.bindAsEventListener(this));
     if($('email_text')) Event.observe($('email_text'), 'keyup', this.copyText.bindAsEventListener(this));
+  },
+
+  initializeFocus: function() {
+    if (this.popupElement.visible()) {
+      $('link_transform_input_' + this.transformationType()).select('select, input')[0].focus();
+    }
   }
   
 });
 
 // Subclass of Popup specifically for adding images
 var ImagePopup = Class.create();
-Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
+Object.extend(Object.extend(ImagePopup.prototype,TextileEditorPopup.prototype), {
   getPopupWindow: function() {
     return $('image-popup');
   },
@@ -308,7 +314,8 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
     }
   },
   
-  transform: function() {
+  transform: function(event) {
+    Event.stop(event);
     altText = $('alt_text').value;
     switch(this.transformationType()) {
       case 'web':
@@ -349,10 +356,16 @@ Object.extend(Object.extend(ImagePopup.prototype,Popup.prototype), {
 
     Element.show('image_transform_input_' + this.transformationType());
     Element.addClassName('image_transform_choice_' + this.transformationType(), 'transform_current');
+    this.initializeFocus();
   },
   
   initializeObservers: function() {
-  }
+  },
+
+  initializeFocus: function() {
+    if (this.popupElement.visible()) {
+      $('image_transform_input_' + this.transformationType()).select('select, input')[0].focus();
+    }  }
   
 });
 
