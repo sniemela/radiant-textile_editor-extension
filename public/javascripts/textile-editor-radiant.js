@@ -185,7 +185,9 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
   initializeFields: function() {
     var linkPattern = /"([^"]*)":([\w-.:\/@]*)/;
     var emailPattern = /<r:enkode_mailto email="([^"]+)"( link_text="([^"]+)")?[^>]*\/>/;
-    var attachmentPattern = /<r:attachment:link name="([^"]+)"[^>]*>(([^<]+)<\/r:attachment:link)?/;
+    var attachmentPattern =
+		    /<r:attachment:link name="([^"]+)"[^>]*>(([^<]+)<\/r:attachment:link)?/;
+
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(linkPattern)) {
         $('display_text').value = RegExp.$1;
@@ -243,10 +245,17 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
         attachment = $('attachment_text');
         attachmentValue = attachment.value;
         attachmentText = displayText.value;
+        size = $('img_attachment_size').value;
+        sizeText = '';
+
+        if (size !== '') {
+            sizeText = " size='" + size + "'";
+        }
+
         if (attachmentText == '') {
-          textInsert = "<r:attachment:link name='"+attachmentValue+"'/>";
+            textInsert = "<r:attachment:link name='" + attachmentValue + "'" + sizeText + "/>";
         } else {
-          textInsert = "<r:attachment:link name='"+attachmentValue+"'>"+attachmentText+"</r:attachment:link>";
+            textInsert = "<r:attachment:link name='" + attachmentValue + "'" + sizeText + ">" + attachmentText + "</r:attachment:link>";
         }
       break
       default: alert('something wrong'); 
@@ -295,15 +304,19 @@ Object.extend(Object.extend(ImagePopup.prototype,TextileEditorPopup.prototype), 
   
   initializeFields: function() {
     var imgPattern = /!([^!(]*)(\(([^)]+)\))?!/;
-    var attachmentPattern = /<r:attachment:image name="([^"]+)"( alt="([^"]+)")?[^>]*\/>/;
+    var attachmentPattern = 
+				/<r:attachment:image name="([^"]+)"( alt="([^"]+)")?( size="([^"]+)")?[^>]*\/>/;
+
     if (this.textSelection['selectedText']) {
       if (this.textSelection['selectedText'].match(imgPattern)) {
         $('img_web_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
+				$('img_attachment_size').value = RegExp.$5;
         this.switchTransformChoice($$("#image_transform_choice_link input")[0]);
       } else if (this.textSelection['selectedText'].match(attachmentPattern)) {
         $('img_attachment_text').value = RegExp.$1;
         $('alt_text').value = RegExp.$3;
+				$('img_attachment_size').value = RegExp.$5;
         this.switchTransformChoice($$("#image_transform_choice_attachment input")[0]);
       } else {
         $('alt_text').value = this.textSelection['selectedText'];
@@ -330,11 +343,18 @@ Object.extend(Object.extend(ImagePopup.prototype,TextileEditorPopup.prototype), 
       case 'attachment':
         attachment = $('img_attachment_text');
         attachmentValue = attachment.value;
-        if (altText == '') {
-          textInsert = "<r:attachment:image name='"+attachmentValue+"'/>";
-        } else {
-          textInsert = "<r:attachment:image name='"+attachmentValue+"' alt='"+altText+"'/>";
+        imageSize = $('img_attachment_size').value;
+        textInsert = "<r:attachment:image name='" + attachmentValue + "'";
+
+        if (altText !== '') {
+            textInsert += " alt='" + altText + "'";
         }
+ 
+        if (imageSize !== '') {
+            textInsert += " size='" + imageSize + "'";
+        }
+
+        textInsert += "/>";
       break
       default: alert('something wrong'); 
     } 

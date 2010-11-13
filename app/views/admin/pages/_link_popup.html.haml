@@ -47,6 +47,16 @@
                   = t('textile_editor.attach_file_and_return')
           %br{:clear => "all"}/
       .transform_container
+
+        - if @page && @page.respond_to?(:attachments) && defined?(PAGE_ATTACHMENT_SIZES)
+          .transform_title.lower
+            %strong= t('textile_editor.image_size')
+          .text_input
+            = select_tag('img_attachment_size', options_for_select([""] + PAGE_ATTACHMENT_SIZES.keys))
+          
+          %br{:clear => "all"}/
+          %br/
+
         .transform_title.lower
           %strong= t('textile_editor.text_to_display')
         .text_input
