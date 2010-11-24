@@ -245,7 +245,7 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
         attachment = $('attachment_text');
         attachmentValue = attachment.value;
         attachmentText = displayText.value;
-        size = $('img_attachment_size').value;
+        size = $('img_link_size').value;
         sizeText = '';
 
         if (size !== '') {

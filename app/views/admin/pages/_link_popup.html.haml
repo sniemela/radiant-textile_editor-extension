@@ -52,7 +52,7 @@
           .transform_title.lower
             %strong= t('textile_editor.image_size')
           .text_input
-            = select_tag('img_attachment_size', options_for_select([""] + PAGE_ATTACHMENT_SIZES.keys))
+            = select_tag('img_link_size', options_for_select([""] + PAGE_ATTACHMENT_SIZES.keys))
           
           %br{:clear => "all"}/
           %br/
