@@ -217,6 +217,8 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
     switch(this.transformationType()) {
       case 'web':
         webAddress = $('web_text');
+        linkClass = $('link_class');
+        linkClassValue = linkClass.value;
         webAddressValue = webAddress.value;
         webAddressText = displayText.value;
         if (webAddressValue.getHostname() == window.location.toString().getHostname()) {
@@ -224,7 +226,12 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
           webAddressText = webAddressText.gsub(RegExp('^(?:f|ht)tp(?:s)?\://', 'im'), '');
         }
         if (webAddressText != '') {
-          textInsert = '"'+webAddressText+'":'+webAddressValue;
+          if (linkClassValue != '') {
+            linkClassValue = '(' + linkClassValue + ')';
+            textInsert = '"' + linkClassValue + '%'+webAddressText+'%":'+webAddressValue;
+          } else {
+            textInsert = '"'+webAddressText+'":'+webAddressValue;
+          }
         }
         else {
           textInsert = webAddressValue;

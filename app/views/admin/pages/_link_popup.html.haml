@@ -47,6 +47,17 @@
                   = t('textile_editor.attach_file_and_return')
           %br{:clear => "all"}/
       .transform_container
+      
+        .transform_title.lower
+          %strong= t('textile_editor.class')
+        .text_input
+          - if defined?(TEXTILE_EDITOR_ALLOWED_LINK_CLASSES)
+            = select_tag('link_class', options_for_select([""] + TEXTILE_EDITOR_ALLOWED_LINK_CLASSES))
+          - else
+            %input#link_class{:type => "text", :name => "link_class"}
+        
+        %br{:clear => "all"}/
+        %br/
 
         - if @page && @page.respond_to?(:attachments) && defined?(PAGE_ATTACHMENT_SIZES)
           .transform_title.lower

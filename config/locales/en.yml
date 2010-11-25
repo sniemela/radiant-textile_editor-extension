@@ -2,7 +2,7 @@ en:
   textile_editor:
     add_image: "Add Image"
     add_link: "Add Link"
-    image_size: "Image size"
+    image_size: "Image size:"
     alt_text: "Alternate text:"
     attach_file_and_return: "Attach one and then return here to add a link to it."
     attach_image_and_return: "Attach one and save changes, then return here to insert it."
@@ -23,3 +23,4 @@ en:
     spam_warning: "Spam warning:"
     text_to_display: "Text to display:"
     web_address: "Web Address"
+    class: "Class:"
