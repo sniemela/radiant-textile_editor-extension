@@ -214,11 +214,12 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
   transform: function(event) {
     Event.stop(event);
     displayText = $('display_text');
+    linkClass = $('link_class');
+    linkClassValue = linkClass.value;
+
     switch(this.transformationType()) {
       case 'web':
         webAddress = $('web_text');
-        linkClass = $('link_class');
-        linkClassValue = linkClass.value;
         webAddressValue = webAddress.value;
         webAddressText = displayText.value;
         if (webAddressValue.getHostname() == window.location.toString().getHostname()) {
@@ -259,10 +260,16 @@ Object.extend(Object.extend(LinkPopup.prototype,TextileEditorPopup.prototype),{
             sizeText = " size='" + size + "'";
         }
 
-        if (attachmentText == '') {
+        if (linkClassValue == '') {
+          if (attachmentText == '') {
             textInsert = "<r:attachment:link name='" + attachmentValue + "'" + sizeText + "/>";
-        } else {
+          } else {
             textInsert = "<r:attachment:link name='" + attachmentValue + "'" + sizeText + ">" + attachmentText + "</r:attachment:link>";
+          }
+        } else {
+          text = '"(' + linkClassValue + ')';
+          text += attachmentText == '' ? '%' + attachmentValue + '%":' : '%' + attachmentText + '%":';
+          textInsert = text + "<r:attachment:url name='" + attachmentValue + "'" + sizeText + "/>";
         }
       break
       default: alert('something wrong'); 
